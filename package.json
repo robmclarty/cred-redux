@@ -1,0 +1,31 @@
+{
+  "name": "cred-redux",
+  "version": "0.0.1",
+  "description": "Redux middleware for managing JWTs client-side and making API calls to an authenticated server.",
+  "main": "index.js",
+  "scripts": {
+    "test": "haha no"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/robmclarty/cred-redux.git"
+  },
+  "keywords": [
+    "cred",
+    "redux",
+    "auth",
+    "jwt",
+    "api",
+    "fetch"
+  ],
+  "author": "Rob McLarty",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robmclarty/cred-redux/issues"
+  },
+  "homepage": "https://github.com/robmclarty/cred-redux#readme",
+  "dependencies": {
+    "localforage": "^1.4.2",
+    "node-fetch": "^1.5.3"
+  }
+}
