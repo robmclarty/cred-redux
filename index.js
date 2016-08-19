@@ -37,8 +37,8 @@
 // The `dispatch` and `getState` parameters are simply passed from Redux as
 // a convenience.
 
-import fetch from 'node-fetch'
-import localforage from 'localforage'
+const fetch = require('node-fetch')
+const localforage = require('localforage')
 
 const credRedux = ({
   name = 'cred-app',
@@ -79,8 +79,7 @@ const credRedux = ({
 
   // Decode base64 token and return the 2nd part (separated by '.') which is the
   // JWT payload object.
-  // TODO: Use a base64 package here instead of plain atob.
-  export const decodedPayload = token => JSON.parse(atob(token.split('.')[1]))
+  const decodedPayload = token => JSON.parse(atob(token.split('.')[1]))
 
   // Return true if the token's `exp` attribute is less than the current time
   // plus 10 minutes (enough time to use the token successfully).
@@ -90,11 +89,11 @@ const credRedux = ({
     return payload.exp <= nowInSeconds + tokenExpirationWindow
   }
 
-  export const tokenIsExpired = token => withinExpirationWindow(decodedPayload(token))
+  const tokenIsExpired = token => withinExpirationWindow(decodedPayload(token))
 
   // Store tokens in local-storage and return the tokens on success, otherwise
   // return a rejected promise. To be used with the login fetch-promise block.
-  export const updateLocalTokens = tokens => {
+  const updateLocalTokens = tokens => {
     const { accessToken, refreshToken } = tokens
 
     return Promise.all([
@@ -104,13 +103,13 @@ const credRedux = ({
   }
 
   // Delete tokens from local storage.
-  export const removeLocalTokens = () => Promise.all([
+  const removeLocalTokens = () => Promise.all([
     localforage.removeItem('accessToken'),
     localforage.removeItem('refreshToken')
   ])
 
   // Return tokens from local stroage.
-  export const getLocalTokens = () => new Promise((resolve, reject) => {
+  const getLocalTokens = () => new Promise((resolve, reject) => {
     return Promise.all([
       localforage.getItem('accessToken'),
       localforage.getItem('refreshToken')
@@ -137,7 +136,7 @@ const credRedux = ({
   // Get fresh access token using a currently valid refresh token.
   // Append the refreshToken to the json response so that it is formatted such
   // that parseTokenResponse() can parse it.
-  export const refreshTokensIfExpired = tokens => new Promise((resolve, reject) => {
+  const refreshTokensIfExpired = tokens => new Promise((resolve, reject) => {
     const { accessToken, refreshToken } = tokens
 
     // If access-token isn't expired, just return it.
@@ -147,10 +146,9 @@ const credRedux = ({
 
     const options = {
       method: 'PUT',
-      headers: {
-        ...jsonHeaders,
+      headers: Object.assign({}, jsonHeaders, {
         'Authorization': `Bearer ${ refreshToken }`
-      }
+      })
     }
 
     request(tokensUrl, options)
@@ -165,16 +163,14 @@ const credRedux = ({
   // Return the current tokens from either the Redux store, or local storage.
   // If they have expired, return refreshed versions, or an error (can no longer
   // refresh them).
-  export const freshTokens = state => getTokens(state.auth.tokens)
+  const freshTokens = state => getTokens(state.auth.tokens)
     .then(refreshTokensIfExpired)
 
   // Return options with Authorization header appeneded.
-  const optionsWithAuth = (options, bearerToken) => ({
-    ...options,
-    headers: {
-      ...options.headers,
+  const optionsWithAuth = (options, bearerToken) => Object.assign({}, options, {
+    headers: Object.assign({}, options.headers, {
       'Authorization': `Bearer ${ bearerToken }`
-    }
+    })
   })
 
   // Use the fetch() command to initiate an AJAX request and return a promise.
@@ -229,4 +225,4 @@ const credRedux = ({
   }
 }
 
-export default credRedux;
+module.exports = credRedux;

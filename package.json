@@ -1,6 +1,6 @@
 {
   "name": "cred-redux",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Redux middleware for managing JWTs client-side and making API calls to an authenticated server.",
   "main": "index.js",
   "scripts": {
